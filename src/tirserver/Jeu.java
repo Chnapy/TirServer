@@ -70,17 +70,18 @@ public class Jeu implements Observer {
 	client.start();
     }
 
-    private void initClientFin(Client client, Paquet paqPseudo) throws IOException {
+    private boolean initClientFin(Client client, Paquet paqPseudo) throws IOException {
 	if (existPseudo(paqPseudo.getFirstMessage())) {
 	    client.envoi("id", "false");
 	    listClient.remove(client);
 	    client.stop();
-	} else {
-	    client.envoi("id", Integer.toString(id));
-	    map.addClient(client.getId());
-	    System.out.println(map);
-	    client.envoi("map", map.toEnvoi());
+	    return false;
 	}
+	client.envoi("id", Integer.toString(id));
+	map.addClient(client.getId());
+	System.out.println(map);
+	client.envoi("map", map.toEnvoi());
+	return true;
     }
 
     private boolean existPseudo(String pseudo) {
