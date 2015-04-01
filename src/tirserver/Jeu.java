@@ -30,7 +30,7 @@ public class Jeu implements Observer {
 	serveur.addObserver(this);
 	map = new Map();
 	listClient = new ArrayList<Client>();
-	id = 1;
+	id = -1;
 	System.out.println(map);
     }
 

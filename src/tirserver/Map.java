@@ -11,8 +11,8 @@ package tirserver;
  */
 public class Map {
 
-    private final static int MAP_WIDTH = 5;
-    private final static int MAP_HEIGHT = 5;
+    public static int MAP_WIDTH = 10;
+    public static int MAP_HEIGHT = 5;
 
     private int[][] map;
 
@@ -24,9 +24,15 @@ public class Map {
     private void initMap() {
 	for (int[] map1 : map) {
 	    for (int j = 0; j < MAP_HEIGHT; j++) {
-		map1[j] = -1;
+		map1[j] = 0;
 	    }
 	}
+	map[2][2] = 1;
+	map[4][1] = 1;
+	map[6][4] = 1;
+	map[1][0] = 1;
+	map[0][4] = 1;
+	map[5][3] = 1;
     }
 
     public void addClient(int id) {
@@ -34,7 +40,7 @@ public class Map {
 	int baseY = (int) (Math.random() * MAP_HEIGHT);
 	while (true) {
 	    if (map[baseX][baseY] == -1 || map[baseX][baseY] == 0) {
-		map[baseX][baseY] = id;
+		map[baseX][baseY] = id + 2;
 		break;
 	    } else {
 		baseX = (int) (Math.random() * MAP_WIDTH);
