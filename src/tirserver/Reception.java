@@ -36,7 +36,7 @@ public class Reception extends Observable implements Runnable {
 
     @Override
     public void run() {
-	System.out.println("En attente de connexions sur le port 43666.");
+	System.out.println("En attente de connexions sur le port " + PORT);
 	try {
 	    while (run) {
 		Socket soc = socketServer.accept();

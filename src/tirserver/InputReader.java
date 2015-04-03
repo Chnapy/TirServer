@@ -7,7 +7,6 @@ package tirserver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,11 +19,13 @@ public class InputReader implements Runnable {
     private final Thread thread;
     private final BufferedReader input;
     private final ListPaquet listPaquet = new ListPaquet();
+    private int id;
     private boolean run;
 
-    public InputReader(BufferedReader in) {
+    public InputReader(BufferedReader in, int ide) {
 	thread = new Thread(this);
 	input = in;
+	id = ide;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class InputReader implements Runnable {
 	try {
 	    while (run) {
 		reception = input.readLine();
-		if (!reception.isEmpty()) {
+		if (!reception.isEmpty() && isForMe(reception)) {
 		    listPaquet.add(new Paquet(reception));
 		    System.out.println(listPaquet.size() + " " + reception);
 		}
@@ -45,7 +46,7 @@ public class InputReader implements Runnable {
 	}
 	System.err.println("InputReader stoppé.");
     }
-    
+
     public void start() {
 	run = true;
 	thread.start();
@@ -62,6 +63,11 @@ public class InputReader implements Runnable {
 
     public ListPaquet getListPaquet() {
 	return listPaquet;
+    }
+
+    private boolean isForMe(String paquet) {
+	int recu = Integer.parseInt(paquet.split(":")[0].substring(1));
+	return recu == id || recu == -1;
     }
 
 }

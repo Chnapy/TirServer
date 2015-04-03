@@ -48,6 +48,10 @@ public class Map {
 	    }
 	}
     }
+    
+    public boolean estLibre(int x, int y) {
+	return map[x][y] == 0;
+    }
 
     public String toEnvoi() {
 	String envoi = "";

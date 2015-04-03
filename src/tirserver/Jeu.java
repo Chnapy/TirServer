@@ -55,7 +55,16 @@ public class Jeu implements Observer {
 	    if (o instanceof Reception) {
 		initClient((Socket) arg);
 	    } else if (o instanceof Client) {
-		initClientFin((Client) o, (Paquet) arg);
+		Client client = (Client) o;
+		Paquet paq = (Paquet) arg;
+		switch (paq.getCommande()) {
+		    case "pseudo":
+			initClientFin(client, (Paquet) arg);
+			break;
+		    case "move":
+			moveClient(client, paq.getFirstMessageToInt(), paq.getMessageToInt(1));
+			break;
+		}
 	    }
 	} catch (IOException ex) {
 	    Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
@@ -72,20 +81,26 @@ public class Jeu implements Observer {
 
     private boolean initClientFin(Client client, Paquet paqPseudo) throws IOException {
 	if (existPseudo(paqPseudo.getFirstMessage())) {
-	    client.envoi("id", "false");
+	    client.envoi(-1, "id", "false");
 	    listClient.remove(client);
 	    client.stop();
 	    return false;
 	}
-	client.envoi("id", Integer.toString(id));
+	client.envoi(-1, "id", Integer.toString(id));
 	map.addClient(client.getId());
 	System.out.println(map);
-	client.envoi("map", map.toEnvoi());
+	client.envoi(client.getId(), "map", map.toEnvoi());
 	return true;
     }
 
     private boolean existPseudo(String pseudo) {
 	return listClient.stream().anyMatch((client) -> (pseudo.equals(client.getPseudo())));
+    }
+
+    private void moveClient(Client client, int x, int y) {
+	if(map.estLibre(x, y)) {
+	    client.envoi("move", Integer.toString(x), Integer.toString(y));
+	}
     }
 
 }

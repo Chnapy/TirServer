@@ -1,7 +1,7 @@
 /*
  * 
  *   iutmontreuil
-eNrzzU/OLi0odswsqsksLcnNzyspSi3NzKkxqHGuySgpKbDS1y8vL9crSU3M1S1KLSjRS87PBQAsSRR6
+ eNrzzU/OLi0odswsqsksLcnNzyspSi3NzKkxqHGuySgpKbDS1y8vL9crSU3M1S1KLSjRS87PBQAsSRR6
 
  * 
  */
@@ -22,28 +22,28 @@ import java.util.Observable;
  *
  */
 public class Client extends Observable implements Runnable {
-    
+
     private final Socket socketClient;
     private final InputReader input;
     private final PrintWriter output;
-    
+
     private final Thread thread;
     private boolean run;
-    
+
     private int id;
     private String pseudo;
     private int vie;
     private int munitions;
     private int puissance;
     private Point position; // Coordonnées x/y
-    
+
     public Client(int id, Socket soc) throws IOException {
 	socketClient = soc;
-	input = new InputReader(new BufferedReader(new InputStreamReader(socketClient.getInputStream())));
+	input = new InputReader(new BufferedReader(new InputStreamReader(socketClient.getInputStream())), id);
 	output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())));
 
 	thread = new Thread(this);
-	
+
 	this.id = id;
 	pseudo = null;
 	vie = 10;
@@ -51,23 +51,27 @@ public class Client extends Observable implements Runnable {
 	puissance = 10;
 	position = new Point();
     }
-    
+
     public ListPaquet getListPaquet() {
 	return input.getListPaquet();
     }
-    
-    public void envoi(String commande, String message) {
-	output.println(commande + ':' + message);
-	System.out.println(commande + ':' + message);
+
+    public void envoi(String commande, String... mess) {
+	String message = mess[0];
+	for (int i = 1; i < mess.length; i++) {
+	    message += ":" + mess[i];
+	}
+	output.println("#" + Integer.toString(id) + ":" + commande + ':' + message);
 	output.flush();
+	System.out.println("#" + Integer.toString(id) + ":" + commande + ':' + message);
     }
-    
+
     public void start() {
 	run = true;
 	input.start();
 	thread.start();
     }
-    
+
     public void stop() throws IOException {
 	run = false;
 	input.stop();
@@ -77,14 +81,19 @@ public class Client extends Observable implements Runnable {
 
     @Override
     public void run() {
-	
-//	while(run) {
-	    Paquet paqPseudo = getListPaquet().waitPaquet("pseudo");
-	    System.out.println(paqPseudo);
+
+	Paquet paqPseudo = getListPaquet().waitPaquet("pseudo");
+	System.out.println(paqPseudo);
+	setChanged();
+	notifyObservers(paqPseudo);
+	Paquet paqPos;
+	while (run) {
+	    paqPos = getListPaquet().waitPaquet("move");
+	    System.out.println(paqPos);
 	    setChanged();
 	    notifyObservers(paqPseudo);
-//	}
-	
+	}
+
     }
 
     public int getId() {
@@ -94,5 +103,5 @@ public class Client extends Observable implements Runnable {
     public String getPseudo() {
 	return pseudo;
     }
-    
+
 }
