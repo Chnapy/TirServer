@@ -81,15 +81,15 @@ public class Jeu implements Observer {
 
     private boolean initClientFin(Client client, Paquet paqPseudo) throws IOException {
 	if (existPseudo(paqPseudo.getFirstMessage())) {
-	    client.envoi(-1, "id", "false");
+	    client.envoi("id", "false");
 	    listClient.remove(client);
 	    client.stop();
 	    return false;
 	}
-	client.envoi(-1, "id", Integer.toString(id));
+	client.envoi("id", Integer.toString(id));
 	map.addClient(client.getId());
 	System.out.println(map);
-	client.envoi(client.getId(), "map", map.toEnvoi());
+	client.envoi("map", map.toEnvoi());
 	return true;
     }
 

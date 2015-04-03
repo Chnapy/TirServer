@@ -1,8 +1,6 @@
 /*
  * 
- *   iutmontreuil
- eNrzzU/OLi0odswsqsksLcnNzyspSi3NzKkxqHGuySgpKbDS1y8vL9crSU3M1S1KLSjRS87PBQAsSRR6
-
+ * 
  * 
  */
 package tirserver;
@@ -39,7 +37,7 @@ public class Client extends Observable implements Runnable {
 
     public Client(int id, Socket soc) throws IOException {
 	socketClient = soc;
-	input = new InputReader(new BufferedReader(new InputStreamReader(socketClient.getInputStream())), id);
+	input = new InputReader(new BufferedReader(new InputStreamReader(socketClient.getInputStream())));
 	output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())));
 
 	thread = new Thread(this);
@@ -61,9 +59,9 @@ public class Client extends Observable implements Runnable {
 	for (int i = 1; i < mess.length; i++) {
 	    message += ":" + mess[i];
 	}
-	output.println("#" + Integer.toString(id) + ":" + commande + ':' + message);
+	output.println(commande + ':' + message);
 	output.flush();
-	System.out.println("#" + Integer.toString(id) + ":" + commande + ':' + message);
+	System.out.println("E : " + commande + ':' + message);
     }
 
     public void start() {
@@ -88,10 +86,11 @@ public class Client extends Observable implements Runnable {
 	notifyObservers(paqPseudo);
 	Paquet paqPos;
 	while (run) {
+	    System.out.println("Attente...");
 	    paqPos = getListPaquet().waitPaquet("move");
-	    System.out.println(paqPos);
+	    System.out.println("Pos recue !");
 	    setChanged();
-	    notifyObservers(paqPseudo);
+	    notifyObservers(paqPos);
 	}
 
     }

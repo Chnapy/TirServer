@@ -44,10 +44,6 @@ public class Reception extends Observable implements Runnable {
 		setChanged();
 		notifyObservers(soc);
 	    }
-	} catch (IOException ex) {
-	    Logger.getLogger(Reception.class.getName()).log(Level.SEVERE, null, ex);
-	}
-	try {
 	    socketServer.close();
 	} catch (IOException ex) {
 	    Logger.getLogger(Reception.class.getName()).log(Level.SEVERE, null, ex);

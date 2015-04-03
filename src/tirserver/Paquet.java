@@ -18,17 +18,13 @@ public class Paquet {
     public Paquet(String paquetBrut) {
 	paquet = paquetBrut.split(":");
     }
-    
-    public int getId() {
-	return Integer.parseInt(paquet[0].substring(1));
-    }
 
     public String getCommande() {
-	return paquet[1];
+	return paquet[0];
     }
 
     public String getMessage(int index) {
-	return paquet[index + 2];
+	return paquet[index + 1];
     }
 
     public String getFirstMessage() {
@@ -36,7 +32,7 @@ public class Paquet {
     }
 
     public int getMessageToInt(int index) {
-	return Integer.parseInt(paquet[index + 2]);
+	return Integer.parseInt(paquet[index + 1]);
     }
 
     public int getFirstMessageToInt() {
@@ -45,8 +41,8 @@ public class Paquet {
 
     public String[] getAllMessages() {
 	String[] ret = new String[paquet.length - 1];
-	for (int i = 2; i < paquet.length - 1; i++) {
-	    ret[i - 2] = paquet[i];
+	for (int i = 1; i < paquet.length - 1; i++) {
+	    ret[i - 1] = paquet[i];
 	}
 	return ret;
     }
