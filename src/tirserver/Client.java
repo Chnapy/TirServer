@@ -103,4 +103,12 @@ public class Client extends Observable implements Runnable {
 	return pseudo;
     }
 
+    public Point getPosition() {
+	return position;
+    }
+
+    public void setPosition(Point position) {
+	this.position = position;
+    }
+
 }

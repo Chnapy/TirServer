@@ -87,7 +87,8 @@ public class Jeu implements Observer {
 	    return false;
 	}
 	client.envoi("id", Integer.toString(id));
-	map.addClient(client.getId());
+	client.setPosition(map.addClient(client.getId()));
+	envoiATousSaufUn(client, "nc", Integer.toString(client.getId()), Integer.toString(client.getPosition().x), Integer.toString(client.getPosition().y));
 	System.out.println(map);
 	client.envoi("map", map.toEnvoi());
 	return true;
@@ -98,9 +99,23 @@ public class Jeu implements Observer {
     }
 
     private void moveClient(Client client, int x, int y) {
-	if(map.estLibre(x, y)) {
-	    client.envoi("move", Integer.toString(x), Integer.toString(y));
+	if (map.estLibre(x, y)) {
+	    System.out.println("Map libre " + x + " " + y);
+	    map.setValeur(client.getPosition().x, client.getPosition().y, 0);
+	    map.setValeur(x, y, client.getId() + 2);
+	    client.getPosition().x = x;
+	    client.getPosition().y = y;
+	    envoiATousSaufUn(client, "move2", Integer.toString(client.getId()), Integer.toString(client.getPosition().x), Integer.toString(client.getPosition().y));
+	} else {
+	    System.err.println("Map OCCUPEE " + x + " " + y);
 	}
+	client.envoi("move", Integer.toString(client.getPosition().x), Integer.toString(client.getPosition().y));
+    }
+
+    private void envoiATousSaufUn(Client pasALui, String commande, String... message) {
+	listClient.stream().filter((client) -> (!client.equals(pasALui))).forEach((client) -> {
+	    client.envoi(commande, message);
+	});
     }
 
 }

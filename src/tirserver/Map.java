@@ -5,6 +5,8 @@
  */
 package tirserver;
 
+import java.awt.Point;
+
 /**
  * Map.java
  *
@@ -35,7 +37,7 @@ public class Map {
 	map[5][3] = 1;
     }
 
-    public void addClient(int id) {
+    public Point addClient(int id) {
 	int baseX = (int) (Math.random() * MAP_WIDTH);
 	int baseY = (int) (Math.random() * MAP_HEIGHT);
 	while (true) {
@@ -47,10 +49,15 @@ public class Map {
 		baseY = (int) (Math.random() * MAP_HEIGHT);
 	    }
 	}
+	return new Point(baseX, baseY);
     }
     
     public boolean estLibre(int x, int y) {
 	return map[x][y] == 0;
+    }
+    
+    public void setValeur(int x, int y, int valeur) {
+	map[x][y] = valeur;
     }
 
     public String toEnvoi() {

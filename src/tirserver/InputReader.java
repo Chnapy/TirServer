@@ -32,9 +32,11 @@ public class InputReader implements Runnable {
 	try {
 	    while (run) {
 		reception = input.readLine();
-		if (!reception.isEmpty()) {
+		if (reception != null && !reception.isEmpty()) {
 		    System.out.println("R : " + reception);
-		    listPaquet.add(new Paquet(reception));
+		    if(!listPaquet.add(new Paquet(reception))) {
+			System.err.println("TEST");
+		    }
 		}
 	    }
 	} catch (IOException ex) {
