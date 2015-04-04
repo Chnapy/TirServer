@@ -64,6 +64,9 @@ public class Jeu implements Observer {
 		    case "move":
 			moveClient(client, paq.getFirstMessageToInt(), paq.getMessageToInt(1));
 			break;
+		    case "tire":
+			tireClient(client, paq.getFirstMessageToInt(), paq.getMessageToInt(1));
+			break;
 		}
 	    }
 	} catch (IOException ex) {
@@ -97,6 +100,15 @@ public class Jeu implements Observer {
     private boolean existPseudo(String pseudo) {
 	return listClient.stream().anyMatch((client) -> (pseudo.equals(client.getPseudo())));
     }
+    
+    private Client getClient(int id) {
+	for(Client client : listClient) {
+	    if(client.getId() == id) {
+		return client;
+	    }
+	}
+	return null;
+    }
 
     private void moveClient(Client client, int x, int y) {
 	if (map.estLibre(x, y)) {
@@ -116,6 +128,20 @@ public class Jeu implements Observer {
 	listClient.stream().filter((client) -> (!client.equals(pasALui))).forEach((client) -> {
 	    client.envoi(commande, message);
 	});
+    }
+
+    private void tireClient(Client client, int x, int y) {
+	envoiATousSaufUn(client, "tire", Integer.toString(client.getId()), Integer.toString(x), Integer.toString(y));
+	int identifiant = map.tireClient(client.getId(), x, y);
+	if(identifiant != -1) {
+	    Client cible = getClient(identifiant);
+	    cible.vie--;
+	    if(cible.vie <= 0) {
+		//todo: mort
+	    } else {
+		cible.envoi("degats", "1");
+	    }
+	}
     }
 
 }

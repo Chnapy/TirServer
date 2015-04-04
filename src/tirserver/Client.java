@@ -30,9 +30,9 @@ public class Client extends Observable implements Runnable {
 
     private int id;
     private String pseudo;
-    private int vie;
-    private int munitions;
-    private int puissance;
+    public int vie;
+    public int munitions;
+    public int puissance;
     private Point position; // Coordonnées x/y
 
     public Client(int id, Socket soc) throws IOException {
@@ -85,6 +85,17 @@ public class Client extends Observable implements Runnable {
 	setChanged();
 	notifyObservers(paqPseudo);
 	Paquet paqPos;
+
+	new Thread(() -> {
+	    Paquet paqTire;
+	    while (run) {
+		paqTire = getListPaquet().waitPaquet("tire");
+		System.out.println("Tire recu !");
+		setChanged();
+		notifyObservers(paqTire);
+	    }
+	}).start();
+
 	while (run) {
 	    System.out.println("Attente...");
 	    paqPos = getListPaquet().waitPaquet("move");
