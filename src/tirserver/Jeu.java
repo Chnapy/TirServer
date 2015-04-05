@@ -91,7 +91,7 @@ public class Jeu implements Observer {
 	}
 	client.envoi("id", Integer.toString(id));
 	client.setPosition(map.addClient(client.getId()));
-	envoiATousSaufUn(client, "nc", Integer.toString(client.getId()), Integer.toString(client.getPosition().x), Integer.toString(client.getPosition().y));
+	envoiATousSaufUn(client, "nc", Integer.toString(client.getId()), client.getPseudo(), Integer.toString(client.getPosition().x), Integer.toString(client.getPosition().y));
 	System.out.println(map);
 	client.envoi("map", map.toEnvoi());
 	return true;
@@ -100,10 +100,10 @@ public class Jeu implements Observer {
     private boolean existPseudo(String pseudo) {
 	return listClient.stream().anyMatch((client) -> (pseudo.equals(client.getPseudo())));
     }
-    
+
     private Client getClient(int id) {
-	for(Client client : listClient) {
-	    if(client.getId() == id) {
+	for (Client client : listClient) {
+	    if (client.getId() == id) {
 		return client;
 	    }
 	}
@@ -133,13 +133,15 @@ public class Jeu implements Observer {
     private void tireClient(Client client, int x, int y) {
 	envoiATousSaufUn(client, "tire", Integer.toString(client.getId()), Integer.toString(x), Integer.toString(y));
 	int identifiant = map.tireClient(client.getId(), x, y);
-	if(identifiant != -1) {
+	if (identifiant != -1) {
 	    Client cible = getClient(identifiant);
 	    cible.vie--;
-	    if(cible.vie <= 0) {
-		//todo: mort
-	    } else {
-		cible.envoi("degats", "1");
+	    cible.envoi("degats", "1");
+	    if (cible.vie <= 0) {
+		int[] pos = map.getPosId(cible.getId());
+		map.setValeur(pos[0], pos[1], 0);
+		listClient.remove(cible);
+		envoiATousSaufUn(cible, "mort", Integer.toString(cible.getId()));
 	    }
 	}
     }
