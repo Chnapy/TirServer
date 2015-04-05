@@ -24,10 +24,12 @@ public class Map {
     }
 
     private void initMap() {
+	int meteors = 0;
 	for (int[] map1 : map) {
 	    for (int j = 0; j < MAP_HEIGHT; j++) {
-		if (Math.random() < 0.3) {
+		if (Math.random() < 0.3 && meteors < MAP_WIDTH * MAP_HEIGHT / 3) {
 		    map1[j] = 1;
+		    meteors++;
 		} else {
 		    map1[j] = 0;
 		}
